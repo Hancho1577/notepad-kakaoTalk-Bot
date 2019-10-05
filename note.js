@@ -9,6 +9,7 @@ var autosave_ = 10; //메세지 10회마다 자동저장
 var is_edited = false;
 var note = [];
 var is_first = true;
+var memory_room = true;
 
 function response(room, msg, sender, isGroupChat, replier, ImageDB, packageName, threadId) {
   if (is_first) { //메모 로드
@@ -22,12 +23,20 @@ function response(room, msg, sender, isGroupChat, replier, ImageDB, packageName,
     if (!content) {
       replier.reply("메모 내용을 입력해 주세요!\n사용방법:" + command_write + " <메모 내용>");
     } else {
-      note[sender] = content;
+      if (memory_room) {
+        if (!note[room]) note[room] = {};
+        note[room][sender] = content;
+      } else note[sender] = content;
       replier.reply("메모작성 완료!" + blank + "\n\n" + content + " 라고 메모가 작성되었습니다.");
     }
 
   }
-  if (msg == command_read) replier.reply(note[sender] ? note[sender] : "작성된 메모가 없습니다."); //메모 읽기
+  if (msg == command_read) { //메모 읽기
+    if (memory_room) {
+      if (!note[room]) replier.reply("작성된 메모가 없습니다.");
+      else replier.reply(note[room][sender] ? note[sender] : "작성된 메모가 없습니다.");
+    } else replier.reply(note[sender] ? note[sender] : "작성된 메모가 없습니다.");
+  }
   if (autosave) {
     autosave_count++;
     if (autosave_count >= autosave_) { //메모 자동저장
