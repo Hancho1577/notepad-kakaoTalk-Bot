@@ -38,8 +38,12 @@ function response(room, msg, sender, isGroupChat, replier, ImageDB, packageName,
       }
     }
   }
+  if (msg == command_save) {
+    FileStream.write(note_address, JSON.stringify(note));
+    replier.reply("메모가 저장되었습니다.");
+  }
 }
 
 function onStartCompile() {
-  FileStream.write(note_address, JSON.stringify(음표));
+  FileStream.write(note_address, JSON.stringify(note));
 }
